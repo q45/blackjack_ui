@@ -1,34 +1,42 @@
 <h1>Blackjack</h1>
 
-Welcome <%= session[:player_name] %>
+<h3>Welcome <%= session[:player_name] %></h3>
 
-<p>Dealers cards:</p>
 
-<ul>
+<div class="well">
+
+<h4>Dealers cards:</h4>
+
+
 	<% session[:dealer_cards].each do |card| %>
-		<li><%= card.to_s %></li>
+		<%= card_image(card) %>
 	<% end %>
-</ul>
 
-<p>Player Cards: </p>
-<ul>
+</div>
+
+
+<div class="well">
+<h4>Player Cards: </h4>
+
 	<% session[:player_cards].each do |card| %>
-		<li><%= card.to_s %></li>
+		<%= card_image(card) %>
 	<% end %>
-</ul>
+
 
 <p>
 	<%= session[:player_name] %> has <%= calculate_total(session[:player_cards]) %>
 </p>
 
+</div>
+
 <% if @show_hit_or_stay_button %>
 
-<form action="/game/player/hit" method="post">
-	<input type="submit" class="btn" value="hit"/>
+<form action="/game/player/hit" method="post" id="hit_form">
+	<input type="submit" class="btn btn-success" value="hit"/>
 </form>
 
-<form action="/game/player/stay" method="post">
-	<input type="submit" class="btn" value="stay"/>
+<form action="/game/player/stay" method="post" id="stay_form">
+	<input type="submit" class="btn btn-warning" value="stay"/>
 </form>
 
 <% end %>

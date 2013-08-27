@@ -25,6 +25,28 @@ helpers do
 		total
 
 	end
+
+	def card_image(card)
+
+		suit = case card[0]
+			when 'hearts' then 'hearts'
+			when 'diamonds' then 'diamonds'
+			when 'clubs' then 'clubs'
+			when 'spades' then 'spades'
+ 		end
+ 		value = card[1]
+ 		if ['J', 'Q', 'K', 'A'].include?(value)
+ 			value = case card[1]
+ 			when 'J' then 'jack'
+ 			when 'Q' then 'queen'
+ 			when 'K' then 'king'
+ 			when 'A' then 'ace'
+ 			end
+ 		end
+
+		"<img src='/images/cards/#{suit}_#{value}.jpg' class=card_image>"
+
+	end
 end
 
 before do
@@ -38,10 +60,10 @@ end
 
 get "/"  do
 	@show_hit_or_stay_button = true
-	if session[:player_name]
-		redirect '/game'
-	else
+	if !session[:player_name]
 		redirect '/new_player'
+	else
+		redirect '/game'
 	end
 end
 
@@ -59,8 +81,8 @@ end
 get '/game' do
 	#set up initial game values
 	#deck
-	suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
-	values = %w[2 3 4 5 6 7 8 9 10 J Q K A]
+	suits = ['hearts', 'diamonds', 'clubs', 'spades']
+	values = %w[2 3 4 5 6 7 8 9 10 j q k a]
 
 	session[:deck] = suits.product(values).shuffle
 	#deal cards
