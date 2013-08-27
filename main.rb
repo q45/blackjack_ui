@@ -82,7 +82,7 @@ get '/game' do
 	#set up initial game values
 	#deck
 	suits = ['hearts', 'diamonds', 'clubs', 'spades']
-	values = %w[2 3 4 5 6 7 8 9 10 j q k a]
+	values = %w[2 3 4 5 6 7 8 9 10 jack queen king ace]
 
 	session[:deck] = suits.product(values).shuffle
 	#deal cards
@@ -107,14 +107,14 @@ end
 post '/game/player/hit' do
 	session[:player_cards] << session[:deck].pop
 	if calculate_total(session[:player_cards]) > 21
-		@error = " Sorry, it looks like you busted"
+		@error = " Sorry, it looks like #{session[player_name]}"
 		@show_hit_or_stay_button = false
 	end
 	erb :game
 end
 
 post '/game/player/stay' do
-	@success = "You have chosen to stay"
+	@success = "#{session[:player_name]} chose to stay"
 	@show_hit_or_stay_button = false
 	erb :game
 end
