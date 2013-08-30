@@ -23,10 +23,11 @@ helpers do
 			total -= 10
 		end
 		total
+end
 
-	end
 
-	def card_image(card)
+
+def card_image(card)
 
 		suit = case card[0]
 			when 'hearts' then 'hearts'
@@ -112,16 +113,56 @@ end
 post '/game/player/hit' do
 	session[:player_cards] << session[:deck].pop
 	if calculate_total(session[:player_cards]) > 21
-		@error = " Sorry, it looks like #{session[player_name]}"
+		@error = " Sorry, it looks like #{session[player_name]} busted"
 		@show_hit_or_stay_button = false
 	end
 	erb :game
 end
 
 post '/game/player/stay' do
+
 	@success = "#{session[:player_name]} chose to stay"
 	@show_hit_or_stay_button = false
+	redirect '/game/dealer'
+end
+
+get '/game/dealer' do
+	@show_hit_or_stay_button = false
+	dealer_total = calculate_total(session[:dealer_cards])
+
+	if dealer_total == 21
+		@error = "Sorry Dealer hit blackjack"
+	elsif dealer_total > 21
+		@success = "Congrats you win. Dealer busted"
+	elsif dealer_total >= 17 #17 18 19 20
+		#dealer stays
+		redirect '/game/compare'
+
+	else
+		#dealer hits
+		@show_dealer_hit_button = true
+	end
+
 	erb :game
 end
 
+post '/game/dealer/hit' do
+	session[:dealer_cards] << session[:deck].pop
+	redirect '/game/dealer'
+end
+
+get '/game/compare' do
+	player_total = calculate_total(session[:player_cards])
+	dealer_total = calculate_total(session[:dealer_cards])
+
+	if player_total < dealer_total
+		@error = "Sorry, you lose"
+	elsif player_total > dealer_total
+		@success = "Congrats you win"
+	else
+		@success = "It's a tie"
+	end
+
+	erb :game
+end
 
