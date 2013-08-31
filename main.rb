@@ -193,4 +193,8 @@ get '/game/compare' do
 	erb :game
 end
 
+get '/game_over' do
+	erb :game_over
+end
+
 
