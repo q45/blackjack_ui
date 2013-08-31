@@ -3,6 +3,9 @@ require 'sinatra'
 
 set :sessions, true
 
+BLACKJACK_AMOUNT = 21
+DEALER_MIN_HIT = 17
+
 helpers do
 
 	def calculate_total(cards)
@@ -19,7 +22,7 @@ helpers do
 
 		#correct for aces
 		arr.select{|element| element == "A"}.count.times do
-			break if total <= 21
+			break if total <= BLACKJACK_AMOUNT
 			total -= 10
 		end
 		total
@@ -103,6 +106,8 @@ post '/new_player' do
 end
 
 get '/game' do
+
+	session[:turn] = session[:player_name]
 	#set up initial game values
 	#deck
 	suits = ['hearts', 'diamonds', 'clubs', 'spades']
@@ -133,9 +138,9 @@ post '/game/player/hit' do
 
 	player_total = calculate_total(session[:player_cards])
 
-	if player_total == 21
+	if player_total == BLACKJACK_AMOUNT
 		winner!("#{session[:player_name]} hit blackjack")
-	elsif player_total > 21
+	elsif player_total > BLACKJACK_AMOUNT
 		loser!("Sorry #{session[:player_name]} you busted")
 	else
 		tie!("")
@@ -151,14 +156,15 @@ post '/game/player/stay' do
 end
 
 get '/game/dealer' do
+	session[:turn] = "dealer"
 	@show_hit_or_stay_button = false
 	dealer_total = calculate_total(session[:dealer_cards])
 
-	if dealer_total == 21
+	if dealer_total == BLACKJACK_AMOUNT
 		@error = "Sorry Dealer hit blackjack"
-	elsif dealer_total > 21
+	elsif dealer_total > BLACKJACK_AMOUNT
 		@success = "Congrats you win. Dealer busted"
-	elsif dealer_total >= 17 #17 18 19 20
+	elsif dealer_total >= DEALER_MIN_HIT #17 18 19 20
 		#dealer stays
 		redirect '/game/compare'
 
