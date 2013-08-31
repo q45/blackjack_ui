@@ -23,19 +23,22 @@ helpers do
 			total -= 10
 		end
 		total
-
+	end
 
 		def winner!(msg)
+			@play_again = true
 			@show_hit_or_stay_button = false
 			@success = "<strong>#{session[:player_name]} wins</strong> #{msg}"
 		end
 
 		def loser!(msg)
+			@play_again = true
 			@show_hit_or_stay_button = false
 			@error = "<strong>#{session[:player_name]} loses</strong> #{msg}"
 		end
 
 		def tie!(msg)
+			@play_again = true
 			@show_hit_or_stay_button = false
 			@succes = "<strong>It's a tie</strong> #{msg}"
 		end	
@@ -62,10 +65,9 @@ def card_image(card)
  		end
 
 		"<img src='/images/cards/#{suit}_#{value}.jpg' class=card_image>"
-
-	end
+	
 end
-
+	
 before do
 	@show_hit_or_stay_button =  true
 end
@@ -137,7 +139,7 @@ post '/game/player/hit' do
 		loser!("Sorry #{session[:player_name]} you busted")
 	else
 		tie!("")
-		
+	end
 	erb :game
 end
 
@@ -190,4 +192,5 @@ get '/game/compare' do
 
 	erb :game
 end
+
 
