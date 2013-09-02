@@ -9,6 +9,7 @@ DEALER_MIN_HIT = 17
 helpers do
 
 	def calculate_total(cards)
+		throw Exception("Cards must be an array") unless cards.is_a?(Array)
 		arr = cards.map{|e| e[1]}
 
 		total = 0
@@ -31,21 +32,21 @@ helpers do
 		def winner!(msg)
 			@play_again = true
 			@show_hit_or_stay_button = false
-			@success = "<strong>#{session[:player_name]} wins</strong> #{msg}"
+			@winner= "<strong>#{session[:player_name]} wins</strong> #{msg}"
 			session[:player_pot] = session[:player_pot] + session[:player_bet]
 		end
 
 		def loser!(msg)
 			@play_again = true
 			@show_hit_or_stay_button = false
-			@error = "<strong>#{session[:player_name]} </strong> #{msg}"
+			@loser = "<strong>#{session[:player_name]} </strong> #{msg}"
 			session[:player_pot] =  session[:player_pot] - session[:player_bet]
 		end
 
 		def tie!(msg)
 			@play_again = true
 			@show_hit_or_stay_button = false
-			@succes = "<strong>It's a tie</strong> #{msg}"
+			@winner = "<strong>It's a tie</strong> #{msg}"
 		end	
 end
 
@@ -155,7 +156,7 @@ end
 post '/game/player/hit' do
 
 	session[:player_cards] << session[:deck].pop
-		@show_hit_or_stay_button = true
+	 
 	player_total = calculate_total(session[:player_cards])
 
 	if player_total == 21
@@ -165,7 +166,7 @@ post '/game/player/hit' do
 	else
 		tie!("Its a tie")
 	end
-	erb :game
+	erb :game, layout: false
 end
 
 post '/game/player/stay' do
@@ -193,7 +194,7 @@ get '/game/dealer' do
 		@show_dealer_hit_button = true
 	end
 
-	erb :game
+	erb :game, layout: false
 end
 
 post '/game/dealer/hit' do
