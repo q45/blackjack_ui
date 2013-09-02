@@ -1,3 +1,4 @@
+<div id="game">
 <h1>Blackjack</h1>
 
 <h3>Welcome <%= session[:player_name] %></h3>
@@ -13,7 +14,7 @@
 
 <% end %>
 
-<div class="well">
+<div class="well" id="dealer-section">
 
 <h4>Dealers cards:</h4>
 
@@ -37,7 +38,7 @@
 </div>
 
 
-<div class="well">
+<div class="well" id="player-section">
 <h4>Player Cards: </h4>
 
 	<% session[:player_cards].each do |card| %>
@@ -62,3 +63,6 @@
 </form>
 
 <% end %>
+
+
+</div>
